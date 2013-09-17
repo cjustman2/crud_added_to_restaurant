@@ -10,6 +10,6 @@ package Model;
  */
 public interface FormatInputStrategy {
     
-    public abstract StringBuilder getTotalBill(String order);
+    public abstract StringBuilder formatInput(String order);
     
 }

@@ -78,8 +78,9 @@ public class OnSubmitController extends HttpServlet {
        
         FormatInputStrategy meal = new StringToArrayFormat();
         
+        
        StringBuilder items;
-       items =  meal.getTotalBill(order);
+       items =  meal.formatInput(order);
         
        
         

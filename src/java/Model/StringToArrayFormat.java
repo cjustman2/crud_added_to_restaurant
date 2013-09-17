@@ -30,7 +30,7 @@ public class StringToArrayFormat implements FormatInputStrategy{
             
             
     @Override
-    public StringBuilder getTotalBill(String order) {
+    public StringBuilder formatInput(String order) {
         this.order = order;
         
         
