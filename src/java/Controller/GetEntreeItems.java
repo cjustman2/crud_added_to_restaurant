@@ -4,11 +4,17 @@
  */
 package Controller;
 
-import Model.AvailableEntreesFromDatabase;
-import Model.RetrieveAvailableEntreeStrategy;
+import Model.DB_Generic;
+import Model.EntreeService;
+import Model.DataAccessStrategy;
+import Model.DatabaseAccessor;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Array;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,8 +26,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author chris
  */
-@WebServlet(name = "OnPageLoadController", urlPatterns = {"/OnPageLoadController"})
-public class OnPageLoadController extends HttpServlet {
+@WebServlet(name = "GetEntreeItems", urlPatterns = {"/GetEntreeItems"})
+public class GetEntreeItems extends HttpServlet {
 
     /**
      * Processes requests for both HTTP
@@ -66,14 +72,18 @@ public class OnPageLoadController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        
-         RetrieveAvailableEntreeStrategy entreeSel = new AvailableEntreesFromDatabase();
+        List<HashMap<String,Object>> list = null;
+           DataAccessStrategy das = new EntreeService();
+
      
-     HashMap<String,String> selections = entreeSel.getAvailableEntrees();
-     
-     request.setAttribute("selections", selections);
-     
+                try{
+
+              list = das.getAllEntreeItems();
+                }catch(Exception e){
+                    request.setAttribute("e", e);
+                }
+   
+   request.setAttribute("list", list);
         
           RequestDispatcher view =
                 request.getRequestDispatcher("/index.jsp");
@@ -95,7 +105,47 @@ public class OnPageLoadController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        /*
+         * Upon choosing a meal from select box, form submits here
+         * 
+         * 
+         */
+        
+       List<HashMap<String,Object>> list = null;
+        
+       DataAccessStrategy  das = new EntreeService();
+       
+       
+        String meal_id = request.getParameter("choose_meal");
+        
+        if(meal_id.equalsIgnoreCase("4"))
+        {
+                        try{
+                   list = das.getAllEntreeItems();
+
+                   }catch(Exception e){
+
+                   } 
+             
+             
+        }else{
+        
+                try{
+                list = das.getEntreesByMealId(meal_id);
+
+                }catch(Exception e){
+
+                }
+        }
+        
+        request.setAttribute("list", list);
+        
+          RequestDispatcher view =
+                request.getRequestDispatcher("/index.jsp");
+        view.forward(request, response);
+        
+        
+        
     }
 
     /**

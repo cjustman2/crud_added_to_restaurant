@@ -6,8 +6,8 @@ package Controller;
 
 import Model.StringToArrayFormat;
 import Model.FormatInputStrategy;
-import Model.AvailableEntreesFromDatabase;
-import Model.RetrieveAvailableEntreeStrategy;
+import Model.EntreeService;
+import Model.DataAccessStrategy;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
@@ -72,20 +72,16 @@ public class OnSubmitController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String order =  request.getParameter("toBeSubmittedItems");
+ 
+        
+        
        
-        
        
-        FormatInputStrategy meal = new StringToArrayFormat();
-        
-        
-       StringBuilder items;
-       items =  meal.formatInput(order);
         
        
         
        
-        request.setAttribute("items", items);
+        
         
         
         

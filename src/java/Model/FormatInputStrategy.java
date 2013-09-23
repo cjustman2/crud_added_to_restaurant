@@ -4,12 +4,14 @@
  */
 package Model;
 
+import java.util.List;
+
 /**
  *
  * @author chris
  */
 public interface FormatInputStrategy {
     
-    public abstract StringBuilder formatInput(String order);
+    public abstract List formatInput(String order);
     
 }

@@ -20,7 +20,7 @@ public class StringToArrayFormat implements FormatInputStrategy{
             private String order = null;
             private String[] orderItems = null;
             
-            private ItemPricingAccessStrategy dbq = new ItemPricesFromDatabase();
+            private DataAccessStrategy das = new EntreeService();
           
   
             
@@ -30,7 +30,7 @@ public class StringToArrayFormat implements FormatInputStrategy{
             
             
     @Override
-    public StringBuilder formatInput(String order) {
+    public List formatInput(String order) {
         this.order = order;
         
         
@@ -50,16 +50,16 @@ public class StringToArrayFormat implements FormatInputStrategy{
         
         
         
-        List<HashMap<String,String>> list = dbq.getItemPrices(orderItems);
-        
-        FormatOutputStrategy output = new ReceiptFormat1();
+        List<HashMap<String,String>> list = null ;
         
         
-        StringBuilder stringBuilder = output.getFormattedReceipt(list);
+        
+        
+        
         
         
       
-       return stringBuilder;
+       return list;
     }
     
 }

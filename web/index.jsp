@@ -4,6 +4,7 @@
     Author     : chris
 --%>
 
+<%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -37,14 +38,31 @@
        document.getElementById("order").onchange = selectItem;
        document.getElementById("orderForm").onsubmit = validate;
        document.getElementById("chosen").onclick = unselectItem;
+       document.getElementById("choose_meal_form").onsubmit = verifyMealId;
+        
+       }
+       
+       
+       
+       function verifyMealId(){
+           var meal = document.getElementById("choose_meal").value;
+         
+           if(meal === ""){
+               alert("Please choose a meal to narrow your choices.");
+               return false;
+           }else{
+           return true;
+           }
+          
        }
        
        
        
        function showForm(){
+         
            var form = document.getElementById("container");
            form.style.visibility = "visible";
-            document.getElementById("entry").value = "Hide";
+            document.getElementById("entry").value = "Click to Hide";
            document.getElementById("entry").onclick = hideForm;
        }
        
@@ -52,7 +70,7 @@
        function hideForm(){
            var form = document.getElementById("container");
            form.style.visibility = "hidden";
-           document.getElementById("entry").value = "Order";
+           document.getElementById("entry").value = "Click to Order";
            document.getElementById("entry").onclick = showForm;
        }
        
@@ -114,12 +132,22 @@
        
        
        
+       
+       
        </script>
        
      
     </head>
+    
+    
+    
+    
+    
+    
+    
+    
     <body>
-        <input type="button" id="entry" value="Order" style="width: 100%; height: 40px"/>
+        <input type="button" id="entry" value="Click to Order" style="width: 100%; height: 40px"/>
         <h1 id="main_heading">My Restaurant</h1>
            
         <div class="container" id="container" style="visibility: hidden">
@@ -129,31 +157,71 @@
             
             
             
-            <% //if no order has been place populate select box with available entrees
+            <% 
+                
+                //Upon page load all entree items are gotten from database and populates select box 
+                //if no order has been place populate select box with available entrees
                 if(request.getAttribute("items")== null){ %>
             
              <div id="heading"><h1 id="heading">Place your order</h1></div>
-            
-            
-            <form id="orderForm" name="orderForm" method="post" action="OnSubmitController" >
+            <!-- choose which entrees by meal id -->
+   <form id="choose_meal_form" name="choose_meal_form" method="post" action="GetEntreeItems">
+        <div class="input-append">
+  
+  
+
+                     <select id="choose_meal" name="choose_meal" onchange="this.form.submit();">
+                    <option value="">Choose Meal</option>
+                    <option value="1">Breakfast</option>
+                    <option value="2">Lunch</option>
+                    <option value="3">Dinner</option>
+                    <option value="4">All Entrees</option>
+                </select>
+  <input class="btn" type="submit" value="Go!" id="choose_meal_btn"/>
+  
+         </div>
+                <br>
+         
+  </form>
+             
+         <!-- end of select by meal id -->
+         
+         
+         
+         
+         
+         
+         
+             
+            <form id="orderForm" name="StringToArrayFormat" method="post" action="OnSubmitController" >
+                
             
              <% 
-                 HashMap<String, String> selections = (HashMap<String, String>)request.getAttribute("selections");
-                 
-                 int size = selections.size() + 1;
+               //retrieve the list of query items
+               List<HashMap<String,Object>> list = (List<HashMap<String,Object>>)request.getAttribute("list");
+                 int size = list.size() + 1;
+                
              out.println("<select name='order' id='order' size='"+size+"'>" + 
                 "<option value='' style='font-size:16px;font-weight:bold;text-decoration:underline'>Place Your Order</option>");
               
-             
-             for(Map.Entry<String, String> selection : selections.entrySet()){   
-            out.println("<option value='"+selection.getKey()+"'>"+selection.getKey()+"............$" + selection.getValue()+"</option>");
+             //output entree items that have returned from lookup
+            for(Map<String, Object> map : list)
+                  for (Map.Entry<String, Object> entry : map.entrySet()) {
+             {  
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                 out.println("<option value='"+value.toString()+"'>"+value.toString()+"</option>");
                }  
-                 
+                  }  
             %>
                 
             </select>
             
+            
+            <!-- display entree items that have been chosen -->
             <textarea id="chosen" cols="10" rows="10"></textarea>
+           <!--end of chosen items div -->
+           
            
             <br>
         
