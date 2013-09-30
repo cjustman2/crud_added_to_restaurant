@@ -48,27 +48,25 @@ public class DB_Generic implements DatabaseAccessor{
     
 
     @Override
- 	public List<HashMap<String,Object>> findRecords(String sqlString, boolean closeConnection) 
+ 		public List findRecords(String sqlString, boolean closeConnection) 
 	throws SQLException, Exception
 	{
 		Statement stmt = null;
 		ResultSet rs = null;
 		ResultSetMetaData metaData = null;
-		final List<HashMap<String,Object>> list=new ArrayList<HashMap<String,Object>>();
+		final List list=new ArrayList();
 		Map record = null;
-             
 
 		// do this in an excpetion handler so that we can depend on the
 		// finally clause to close the connection
 		try {
-                       
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(sqlString);
 			metaData = rs.getMetaData();
 			final int fields=metaData.getColumnCount();
 
 			while( rs.next() ) {
-				record = new HashMap<String,Object>();
+				record = new HashMap();
 				for( int i=1; i <= fields; i++ ) {
 					try {
 						record.put( metaData.getColumnName(i), rs.getObject(i) );
@@ -76,7 +74,7 @@ public class DB_Generic implements DatabaseAccessor{
 						// no need to do anything... if it fails, just ignore it and continue
 					}
 				} // end for
-				list.add((HashMap<String, Object>) record);
+				list.add(record);
 			} // end while
 
 		} catch (SQLException sqle) {
@@ -94,6 +92,72 @@ public class DB_Generic implements DatabaseAccessor{
 
 		return list; // will  be null if none found
 	}
+    
+    
+    
+    
+
+    @Override
+    public int editRecord(String sql, boolean closeDatabaseConnection) throws Exception{
+        Statement stm = null;
+        int count = 0;
+        stm = conn.createStatement();
+	count = stm.executeUpdate(sql);
+        
+                         try {
+				stm.close();
+				if(closeDatabaseConnection) conn.close();
+			} catch(SQLException e) {
+				throw e;
+			}
+        
+        return count;
+    }
+    
+    
+    
+
+    @Override
+    public int addRecord(String sql, boolean closeDatabaseConnection) throws Exception {
+        Statement stm = null;
+        int count = 0;
+        stm = conn.createStatement();
+	count = stm.executeUpdate(sql);
+        
+                        try {
+				stm.close();
+				if(closeDatabaseConnection) conn.close();
+			} catch(SQLException e) {
+				throw e;
+			}
+                        
+                        
+        
+        return count;    
+    }
+
+    
+    
+    
+    
+    @Override
+    public int deleteRecord(String sql, boolean closeDatabaseConnection) throws Exception {
+        Statement stm = null;
+        int count = 0;
+        stm = conn.createStatement();
+	count = stm.executeUpdate(sql);
+        
+                        try {
+				stm.close();
+				if(closeDatabaseConnection) conn.close();
+			} catch(SQLException e) {
+				throw e;
+			}
+                        
+                        
+        
+        return count; 
+    }
 
     
 }

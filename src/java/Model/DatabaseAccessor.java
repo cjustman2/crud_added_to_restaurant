@@ -16,9 +16,15 @@ import java.util.Map;
 public interface DatabaseAccessor {
     
     
-    public abstract List<HashMap<String,Object>> findRecords(String sql, boolean closeConnection)throws SQLException, Exception;
+    public abstract List findRecords(String sql, boolean closeConnection)throws SQLException, Exception;
     
     public abstract void openConnection() 
 	throws IllegalArgumentException, ClassNotFoundException, SQLException;
+    
+    public abstract int editRecord(String sql, boolean closeDatabaseConnection) throws Exception;
+    
+    public abstract int addRecord(String sql, boolean closeDatabaseConnection)throws Exception;
+    
+    public abstract int deleteRecord(String sql, boolean closeDatabaseConnection)throws Exception;
     
 }

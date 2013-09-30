@@ -4,17 +4,15 @@
  */
 package Controller;
 
-import Model.DB_Generic;
-import Model.EntreeService;
-import Model.DataAccessStrategy;
-import Model.DatabaseAccessor;
+import Model.FormatInput;
+
+import Model.MenuService;
+import Model.Receipt;
+import Model.SeviceStrategy;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Array;
-import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,8 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author chris
  */
-@WebServlet(name = "GetEntreeItems", urlPatterns = {"/GetEntreeItems"})
-public class GetEntreeItems extends HttpServlet {
+@WebServlet(name = "CalculatePriceController", urlPatterns = {"/CalculateBillController"})
+public class CalculateBillContoller extends HttpServlet {
 
     /**
      * Processes requests for both HTTP
@@ -43,20 +41,7 @@ public class GetEntreeItems extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        try {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet OnPageLoadController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet OnPageLoadController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {            
-            out.close();
-        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -72,27 +57,11 @@ public class GetEntreeItems extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<HashMap<String,Object>> list = null;
-           DataAccessStrategy das = new EntreeService();
-
+        
+    
      
-                try{
-
-              list = das.getAllEntreeItems();
-                }catch(Exception e){
-                    request.setAttribute("e", e);
-                }
-   
-   request.setAttribute("list", list);
-        
-          RequestDispatcher view =
-                request.getRequestDispatcher("/index.jsp");
-        view.forward(request, response);
-        
     }
 
-
-    
     /**
      * Handles the HTTP
      * <code>POST</code> method.
@@ -105,44 +74,31 @@ public class GetEntreeItems extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        /*
-         * Upon choosing a meal from select box, form submits here
-         * 
-         * 
-         */
+            FormatInput input = new FormatInput();
+            SeviceStrategy order = new MenuService();
+            Receipt receipt = null;
+            List items;
+            
+            
+            
+               String inputOrder = request.getParameter("toBeSubmittedItems");
+               
+               
+               items = input.formatInputToarray(inputOrder);
+               
+               try{
+               receipt = order.calculateBill(items);
+               }catch(Exception e){
+                   
+               }
+               
+               
+               request.setAttribute("receipt", receipt);
         
-       List<HashMap<String,Object>> list = null;
-        
-       DataAccessStrategy  das = new EntreeService();
-       
-       
-        String meal_id = request.getParameter("choose_meal");
-        
-        if(meal_id.equalsIgnoreCase("4"))
-        {
-                        try{
-                   list = das.getAllEntreeItems();
-
-                   }catch(Exception e){
-
-                   } 
-             
-             
-        }else{
-        
-                try{
-                list = das.getEntreesByMealId(meal_id);
-
-                }catch(Exception e){
-
-                }
-        }
-        
-        request.setAttribute("list", list);
-        
-          RequestDispatcher view =
+        RequestDispatcher view =
                 request.getRequestDispatcher("/index.jsp");
         view.forward(request, response);
+        
         
         
         

@@ -6,6 +6,7 @@ package Model;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +17,11 @@ import javax.swing.text.NumberFormatter;
  *
  * @author chris
  */
-public class StringToArrayFormat implements FormatInputStrategy{
+public class FormatInput {
             private String order = null;
             private String[] orderItems = null;
             
-            private DataAccessStrategy das = new EntreeService();
+            
           
   
             
@@ -29,37 +30,29 @@ public class StringToArrayFormat implements FormatInputStrategy{
             
             
             
-    @Override
-    public List formatInput(String order) {
+   
+    public List formatInputToarray(String order) {
+        List items = new ArrayList();
         this.order = order;
         
         
         
         
-        orderItems = order.split("\r");
+        orderItems = order.split(",");
         
         
-        
+        items =  Arrays.asList(orderItems);
         //get rid of new line character
-        for(int i = 0; i < orderItems.length; i++){
+        for(int i = 0; i < items.size(); i++){
             
-            
-          orderItems[i] = orderItems[i].replaceAll("\\n", "");
+
+                    if(items.get(i) == null){
+                        items.remove(i);
+
+                    }
             
         }
-        
-        
-        
-        List<HashMap<String,String>> list = null ;
-        
-        
-        
-        
-        
-        
-        
-      
-       return list;
+   return items;
     }
     
 }

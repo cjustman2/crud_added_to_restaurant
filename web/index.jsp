@@ -4,6 +4,9 @@
     Author     : chris
 --%>
 
+<%@page import="java.text.DecimalFormat"%>
+<%@page import="Model.Receipt"%>
+<%@page import="Model.MenuItem"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
@@ -86,26 +89,35 @@
        
        function selectItem(){
         var s = document.getElementById("order");  
-       var selected = s.value;
+       var selected = s.value.split(",");
        var chosen = document.getElementById("chosen");
+       var toBeSubmitted = document.getElementById("toBeSubmittedItems");
        
-       
+        myOrder = new Array();
        myMeal = new Array();
-         var i = chosen.value;
+       
+       
+       var id = toBeSubmittedItems.value;
+       var i = chosen.value;
       
        if(i !== null){
            
            myMeal += i;
        }
+       
+       if(id !== null){
+           myOrder += id;
+       }
       
     
-      if(selected !== ""){
-      myMeal += selected;
-          
+      if(selected[0] !== ""){
+      myMeal += selected[0];
+        myOrder += selected[1] + ",";
+        
       chosen.innerHTML = myMeal + "\r";
       
-      var toBeSubmitted = document.getElementById("toBeSubmittedItems");
-      toBeSubmitted.value = myMeal;
+      
+      toBeSubmitted.value = myOrder;
       
       }
        
@@ -147,8 +159,17 @@
     
     
     <body>
-        <input type="button" id="entry" value="Click to Order" style="width: 100%; height: 40px"/>
+        
+          <div class="container">
+              <div class="row" style="height:40px">
+                <span class="pull-right"><a href="GetEntreeItemsController?page=loggedIn.jsp">Login</a></span>
+            </div>
+          </div>
+                     <input type="button" id="entry" value="Click to Order" style="width: 100%; height: 40px"/>
+      
+        
         <h1 id="main_heading">My Restaurant</h1>
+    
            
         <div class="container" id="container" style="visibility: hidden">
         
@@ -161,11 +182,11 @@
                 
                 //Upon page load all entree items are gotten from database and populates select box 
                 //if no order has been place populate select box with available entrees
-                if(request.getAttribute("items")== null){ %>
+                if(request.getAttribute("receipt")== null){ %>
             
              <div id="heading"><h1 id="heading">Place your order</h1></div>
             <!-- choose which entrees by meal id -->
-   <form id="choose_meal_form" name="choose_meal_form" method="post" action="GetEntreeItems">
+   <form id="choose_meal_form" name="choose_meal_form" method="post" action="GetEntreeItemsController?page=index.jsp">
         <div class="input-append">
   
   
@@ -193,25 +214,23 @@
          
          
              
-            <form id="orderForm" name="StringToArrayFormat" method="post" action="OnSubmitController" >
+            <form id="orderForm" name="orderForm" method="post" action="CalculateBillController" >
                 
             
              <% 
                //retrieve the list of query items
-               List<HashMap<String,Object>> list = (List<HashMap<String,Object>>)request.getAttribute("list");
+               List<MenuItem> list = (List<MenuItem>)request.getAttribute("list");
                  int size = list.size() + 1;
                 
              out.println("<select name='order' id='order' size='"+size+"'>" + 
                 "<option value='' style='font-size:16px;font-weight:bold;text-decoration:underline'>Place Your Order</option>");
               
              //output entree items that have returned from lookup
-            for(Map<String, Object> map : list)
-                  for (Map.Entry<String, Object> entry : map.entrySet()) {
-             {  
-                String key = entry.getKey();
-                Object value = entry.getValue();
-                 out.println("<option value='"+value.toString()+"'>"+value.toString()+"</option>");
-               }  
+            for(MenuItem item : list)
+              {  
+              
+                 out.println("<option value='"+item.getEntree_name()+","+item.getEntree_id()+"'>"+item.getEntree_name()+"......$"+item.getEntree_price()+"</option>");
+                
                   }  
             %>
                 
@@ -246,18 +265,25 @@
             <% 
                 
                 //if order has been placed display bill
-            if(request.getAttribute("items") != null){ %>
+            if(request.getAttribute("receipt") != null){ %>
             
              <h1 id="heading">Bill</h1><hr>
             
            <% 
+             Receipt receipt = new Receipt();
+            receipt = (Receipt)request.getAttribute("receipt");
             
-            StringBuilder items = (StringBuilder)request.getAttribute("items");
-            
-            out.println(items);
+        for(MenuItem item : receipt.getItems()){
+            out.println(item.getEntree_name()+".....$"+item.getEntree_price()+ "<br>");
+        }
+        out.println("_____________________<br>");
+        out.println("Total..... $" +receipt.getTotal().toString()+ "<br>");
+        out.println("Suggested Tip..... $" + receipt.getTip().toString());
+        
+                 
             
             %>
-            <a href="OnPageLoadController" class="btn" id="reorder">Reorder</a>
+            <br><a href="GetEntreeItemsController" class="btn" id="reorder">Reorder</a>
            <% } %>
             
         </div>
