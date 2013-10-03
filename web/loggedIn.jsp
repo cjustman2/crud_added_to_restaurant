@@ -27,19 +27,11 @@
         <div class="container">
             <h1>Administrator</h1>
             
-                        <%  
-            /**********************status of actions**************/
-      
-            if(request.getAttribute("cnt") != null){
-                out.println(request.getAttribute("cnt").toString());
-                System.exit(0);
-            }
-            
-            /*************************************************/
-            %>
+     
             
                     <!--if only one entree has not been chosen for edit and new record button hasn't been selected -->
-            <%  if(request.getAttribute("entree") == null && request.getAttribute("add_record") == null){%>
+                    <%  if(request.getAttribute("entree") == null && request.getAttribute("add_record") == null && 
+                            request.getAttribute("list") != null){%>
             
             
             
@@ -181,6 +173,11 @@
                      </form>
           
                      <% }  /******************End of add new record *****************/%>
+                     
+                     
+                     
+                     
+                     <div id="link" style="width:200px; margin:300px auto"><a href="${link}">${link}</a></div>
         </div>
     </body>
 </html>

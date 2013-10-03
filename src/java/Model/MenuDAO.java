@@ -245,17 +245,17 @@ public class MenuDAO implements IMenuDAO{
     public int addNewRecord(MenuItem item) throws Exception {
        String name = null;
         String price = null;
-        String meal = null;
+        int meal = 0;
        
         int count = 0;
         
         name = item.getEntree_name().toString();
         price = item.getEntree_price().toString();
-        meal = item.getMeal().toString();
+        meal = Integer.parseInt(item.getMeal().toString());
        
         
-  String ADD_RECORD = "INSERT INTO entrees(entree_id, entree_name, price_amount, meal_id) VALUES (NULL, '"+name+"','"+price+
-          "','"+meal+"');";
+  String ADD_RECORD = "INSERT INTO entrees(entree_name, price_amount, meal_id) VALUES ('"+name+"','"+price+
+          "',"+meal+");";
          
       
         
@@ -263,7 +263,7 @@ public class MenuDAO implements IMenuDAO{
              db.openConnection();
          
          
-       count = db.editRecord(ADD_RECORD, true);
+       count = db.addRecord(ADD_RECORD, true);
         
         
         return count;    
@@ -294,7 +294,7 @@ public class MenuDAO implements IMenuDAO{
          
        count = db.deleteRecord(DELETE_RECORD + id, true);
        
-       list.remove(item);
+       
        
                  
         total += 1;

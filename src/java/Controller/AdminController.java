@@ -126,7 +126,9 @@ public class AdminController extends HttpServlet {
         String meal = null;//breakfast, lunch, or dinner
         String id = null;//id of entree
         int count = 0;//number of records updated
-        
+        String cnt = null;//return to jsp page 
+                
+                
         action = request.getParameter("action");
         
         
@@ -144,8 +146,8 @@ public class AdminController extends HttpServlet {
             
         }
        
-        String cnt = Integer.toString(count);
-            request.setAttribute("cnt", cnt);
+        cnt = Integer.toString(count);
+            
        
         /*************** Add new Record ******************/
         }else if(action.equalsIgnoreCase("new")){
@@ -155,14 +157,15 @@ public class AdminController extends HttpServlet {
              try{
               
                count = service.addNewMenuItem(price, meal, name);
-               
+               cnt = Integer.toString(count);
             }catch(Exception e){
                
             }
              
+            
              
-             String cnt = Integer.toString(count);
-            request.setAttribute("cnt", cnt);
+             
+           
            
             
        /*************** Edit Record *********************/     
@@ -180,20 +183,22 @@ public class AdminController extends HttpServlet {
                
             }
             
-            String cnt = Integer.toString(count);
-         request.setAttribute("cnt", cnt);
+           cnt = Integer.toString(count);
+        
             
         }
         /***************end of edit***********************/
         
         
+        if(cnt.equalsIgnoreCase("0")){
+            cnt = "Error";
+        }
         
-        
-        
+         request.setAttribute("cnt", cnt);
        
         
          RequestDispatcher view =
-                request.getRequestDispatcher("/loggedIn.jsp");
+                request.getRequestDispatcher("/output.jsp");
         view.forward(request, response);
         
         

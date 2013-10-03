@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author chris
  */
-@WebServlet(name = "GetEntreeItemsController", urlPatterns = {"/GetEntreeItemsController"})
+//@WebServlet(name = "GetEntreeItemsController", urlPatterns = {"/GetEntreeItemsController"})
 public class GetEntreeItemsController extends HttpServlet {
 
     /**
@@ -105,7 +105,13 @@ public class GetEntreeItemsController extends HttpServlet {
                 }
    
    request.setAttribute("list", list);
-        
+   
+   String link = this.getServletContext().getInitParameter("Built with Bootstrap");
+     String reference = this.getServletConfig().getInitParameter("name");
+     
+   request.setAttribute("reference", reference);
+   request.setAttribute("link", link);
+   
           RequestDispatcher view =
                 request.getRequestDispatcher("/"+SEND_TO_PAGE);
         view.forward(request, response);
